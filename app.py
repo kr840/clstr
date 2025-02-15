@@ -1,101 +1,79 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import pandas as pd
-import numpy as np 
-import streamlit as st 
+import numpy as np
+import streamlit as st
+import pickle
 
-import pickle 
+# Load the pickled model
+with open("Model_KNN", 'rb') as file:
+    loaded_model = pickle.load(file)
 
-pickle_in = open('model_KNN','rb')
-# Load the pickled object (e.g., K-Means model) from a file
-with open("model_KNN", 'rb') as file:
-    loaded_model = pickle.load(open("model_KNN"))
-    
-import pandas as pd
-
-try:
-    data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='utf-8') 
-except UnicodeDecodeError:
-    # Attempt to read with a different encoding
-    data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='latin-1')
-    
+df = pd.read_excel(r"WDMDataset.xlsx") 
 st.title('Prediction on Global Development Measurement')
 st.sidebar.header('User Input Parameters')
 
 def user_input_features():
+    """
+    Collects user input for various features.
+    """
     birth_rate = st.sidebar.number_input("Birth Rate")
-    business_tax_rate = st.sidebar.number_input("Business Tax Rate",max_value=60.00)
-    co2_emission = st.sidebar.number_input('CO2 Emissions',min_value=0.000 )
-    days_to_start_business = st.sidebar.number_input('No. of Days to Start Business',max_value=80.00)
-    energy_usage = st.sidebar.number_input('Energy Usage',min_value=0.000)
-    GDP = st.sidebar.number_input('GDP ($)',min_value=0.000)
+    business_tax_rate = st.sidebar.number_input("Business Tax Rate", max_value=60.00)
+    co2_emission = st.sidebar.number_input('CO2 Emissions', min_value=0.000)
+    days_to_start_business = st.sidebar.number_input('No. of Days to Start Business', max_value=80.00)
+    energy_usage = st.sidebar.number_input('Energy Usage', min_value=0.000)
+    GDP = st.sidebar.number_input('GDP ($)', min_value=0.000)
     health_exp_percent_GDP = st.sidebar.number_input('Health Exp % GDP value')
-    health_exp_percapita = st.sidebar.number_input('Health Exp/Capita',min_value=0.000)
-    hours_to_do_tax = st.sidebar.number_input('Hours to do Tax',max_value=600.00)
+    health_exp_percapita = st.sidebar.number_input('Health Exp/Capita', min_value=0.000)
+    hours_to_do_tax = st.sidebar.number_input('Hours to do Tax', max_value=600.00)
     infant_mortality_rate = st.sidebar.number_input('Infant Mortality Rate')
     internet_usage = st.sidebar.number_input('Internet Usage duration')
     lending_interest = st.sidebar.number_input('Lending Interest rate')
     life_expectancy_female = st.sidebar.number_input('Life Expectancy Female')
     life_expectancy_male = st.sidebar.number_input('Life Expectancy Male')
     mobile_phone_usage = st.sidebar.number_input('Mobile Phone Usage duration')
-    population_0_14 =  st.sidebar.number_input('Population between 0-14 Years')
-    population_15_64 =  st.sidebar.number_input('Population between 15-64 Years')
-    population_65_plus =  st.sidebar.number_input('Population between 65+ Years')
-    population_total = st.sidebar.number_input('Population Total',min_value=0.000)
+    population_0_14 = st.sidebar.number_input('Population between 0-14 Years')
+    population_15_64 = st.sidebar.number_input('Population between 15-64 Years')
+    population_65_plus = st.sidebar.number_input('Population between 65+ Years')
+    population_total = st.sidebar.number_input('Population Total', min_value=0.000)
     population_urban = st.sidebar.number_input('Population Urban')
-    tourism_inbound = st.sidebar.number_input('Tourism Inbound ($)',min_value=0.000)
-    tourism_outbound = st.sidebar.number_input('Tourism Outbound ($)',min_value=0.000)
-    country = st.sidebar.text_input(' enter country')
-    
-    data = {'birth_rate' : birth_rate, 'business_tax_rate' : business_tax_rate, 'co2_emission': co2_emission,
-       'days_to_start_business' : days_to_start_business, 'energy_usage' : energy_usage,
-       'GDP':GDP, 'health_exp_percent_GDP': health_exp_percent_GDP,'health_exp_percapita': health_exp_percapita,
-       'hours_to_do_tax':hours_to_do_tax, 'infant_mortality_rate' : infant_mortality_rate, 'internet_usage':internet_usage,
-       'lending_interest': lending_interest, 'life_expectancy_female':life_expectancy_female, 'life_expectancy_male':life_expectancy_male,
-       'mobile_phone_usage' : mobile_phone_usage, 'population_0_14' : population_0_14 , 'population_15_64' : population_15_64 ,
-       'population_65_plus' : population_65_plus , 'population_total' : population_total , 
-       'population_urban' : population_urban, 'tourism_inbound' : tourism_inbound,'tourism_outbound': tourism_outbound,'country': country}
-    
-    features = pd.DataFrame(data,index = [0])
+    tourism_inbound = st.sidebar.number_input('Tourism Inbound ($)', min_value=0.000)
+    tourism_outbound = st.sidebar.number_input('Tourism Outbound ($)', min_value=0.000)
+    country = st.sidebar.text_input('Enter Country')
+
+    data = {'birth_rate': birth_rate, 'business_tax_rate': business_tax_rate, 'co2_emission': co2_emission,
+            'days_to_start_business': days_to_start_business, 'energy_usage': energy_usage,
+            'GDP': GDP, 'health_exp_percent_GDP': health_exp_percent_GDP, 'health_exp_percapita': health_exp_percapita,
+            'hours_to_do_tax': hours_to_do_tax, 'infant_mortality_rate': infant_mortality_rate, 'internet_usage': internet_usage,
+            'lending_interest': lending_interest, 'life_expectancy_female': life_expectancy_female, 'life_expectancy_male': life_expectancy_male,
+            'mobile_phone_usage': mobile_phone_usage, 'population_0_14': population_0_14, 'population_15_64': population_15_64,
+            'population_65_plus': population_65_plus, 'population_total': population_total,
+            'population_urban': population_urban, 'tourism_inbound': tourism_inbound, 'tourism_outbound': tourism_outbound}
+
+    features = pd.DataFrame(data, index=[0])
     features = features.drop(columns=['country'], axis=1)
-    return features 
+    return features
+
 df = user_input_features()
 st.subheader('User Input parameters')
-st.write(df) 
-
-
-
-    
-# load the model from disk
-loaded_model = load(open('model_KNN','rb'))
-prediction = loaded_model.predict(df)
-st.subheader('Predicted Result')
-
-
-def analysis(prediction):
-    if prediction == 0:
-        return 'Developing Country'
-    elif prediction == 1:
-        return 'Under Developed Country'
-    elif prediction == 2:
-        return 'Developed Country'
-    else:
-        return 'Small Country'
-
-# st.write(analysis(prediction))
+st.write(df)
 
 if st.button("Predict"):
+    prediction = loaded_model.predict(df)
+
+    def analysis(prediction):
+        """
+        Maps prediction to country development level.
+        """
+        if prediction == 0:
+            return 'Developing Country'
+        elif prediction == 1:
+            return 'Under Developed Country'
+        elif prediction == 2:
+            return 'Developed Country'
+        else:
+            return 'Small Country'
+
+    st.subheader('Predicted Result')
     st.write(analysis(prediction))
-    
-   
-
-
-# In[ ]:
-
 
 
 
