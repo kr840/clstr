@@ -4,7 +4,7 @@ import streamlit as st
 import pickle
 
 # Load the pickled model
-with open("Model_KNN", 'rb') as file:
+with open("model_KNN", 'rb') as file:
     loaded_model = pickle.load(file)
 
 st.title('Prediction on Global Development Measurement')
