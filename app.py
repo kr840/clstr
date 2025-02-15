@@ -15,7 +15,9 @@ pickle_in = open('model_KNN','rb')
 with open("model_KNN", 'rb') as file:
     loaded_model = pickle.load(open("model_KNN"))
     
-df=pd.read_excel(r"WDMDataset.xlsx")
+import pandas as pd
+
+data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='utf-8')
 st.title('Prediction on Global Development Measurement')
 st.sidebar.header('User Input Parameters')
 
