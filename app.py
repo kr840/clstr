@@ -1,14 +1,10 @@
-
-import pickle
 import pandas as pd
 import numpy as np
 import streamlit as st
-from sklearn.neighbors import KNeighborsClassifier  # Import KNeighborsClassifier
-
-# ... (rest of your code) ...
+from sklearn.neighbors import KNeighborsClassifier 
 
 # Load the pickled model
-with open("model_KNN", 'rb') as file:
+with open("Model_KNN", 'rb') as file:
     loaded_model = pickle.load(file)
 
 st.title('Prediction on Global Development Measurement')
