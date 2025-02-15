@@ -17,7 +17,12 @@ with open("model_KNN", 'rb') as file:
     
 import pandas as pd
 
-data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='utf-8')
+try:
+    data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='utf-8') 
+except UnicodeDecodeError:
+    # Attempt to read with a different encoding
+    data = pd.read_excel("WDMDataset.xlsx", engine='openpyxl', encoding='latin-1')
+    
 st.title('Prediction on Global Development Measurement')
 st.sidebar.header('User Input Parameters')
 
