@@ -1,8 +1,12 @@
+
+import streamlit as st
+import pickle
 import pandas as pd
 import numpy as np
 import streamlit as st
-import pickle
+from sklearn.neighbors import KNeighborsClassifier  # Import KNeighborsClassifier
 
+# ... (rest of your code) ...
 
 # Load the pickled model
 with open("model_KNN", 'rb') as file:
