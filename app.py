@@ -10,10 +10,10 @@ import streamlit as st
 
 import pickle 
 
-pickle_in = open('Model_KNN','rb')
+pickle_in = open('model_KNN','rb')
 # Load the pickled object (e.g., K-Means model) from a file
-with open("Model_KNN", 'rb') as file:
-    loaded_model = pickle.load(open("Model_KNN"))
+with open("model_KNN", 'rb') as file:
+    loaded_model = pickle.load(open("model_KNN"))
     
 df=pd.read_excel(r"WDMDataset.xlsx")
 st.title('Prediction on Global Development Measurement')
@@ -64,7 +64,7 @@ st.write(df)
 
     
 # load the model from disk
-loaded_model = load(open('Model_KNN','rb'))
+loaded_model = load(open('model_KNN','rb'))
 prediction = loaded_model.predict(df)
 st.subheader('Predicted Result')
 
