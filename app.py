@@ -4,7 +4,7 @@ import streamlit as st
 from sklearn.neighbors import KNeighborsClassifier 
 
 # Load the pickled model
-with open("Model_KNN", 'rb') as file:
+with open("model_KNN", 'rb') as file:
     loaded_model = pickle.load(file, encoding='latin1')
 st.title('Prediction on Global Development Measurement')
 st.sidebar.header('User Input Parameters')
