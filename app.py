@@ -7,7 +7,6 @@ import pickle
 with open("Model_KNN", 'rb') as file:
     loaded_model = pickle.load(file)
 
-df = pd.read_excel(r"WDMDataset.xlsx") 
 st.title('Prediction on Global Development Measurement')
 st.sidebar.header('User Input Parameters')
 
@@ -37,8 +36,7 @@ def user_input_features():
     population_urban = st.sidebar.number_input('Population Urban')
     tourism_inbound = st.sidebar.number_input('Tourism Inbound ($)', min_value=0.000)
     tourism_outbound = st.sidebar.number_input('Tourism Outbound ($)', min_value=0.000)
-    country = st.sidebar.text_input('Enter Country')
-
+    # Removed 'country' from the data dictionary
     data = {'birth_rate': birth_rate, 'business_tax_rate': business_tax_rate, 'co2_emission': co2_emission,
             'days_to_start_business': days_to_start_business, 'energy_usage': energy_usage,
             'GDP': GDP, 'health_exp_percent_GDP': health_exp_percent_GDP, 'health_exp_percapita': health_exp_percapita,
@@ -49,7 +47,6 @@ def user_input_features():
             'population_urban': population_urban, 'tourism_inbound': tourism_inbound, 'tourism_outbound': tourism_outbound}
 
     features = pd.DataFrame(data, index=[0])
-    features = features.drop(columns=['country'], axis=1)
     return features
 
 df = user_input_features()
@@ -74,6 +71,3 @@ if st.button("Predict"):
 
     st.subheader('Predicted Result')
     st.write(analysis(prediction))
-
-
-
